@@ -42,4 +42,11 @@ public class ParcelService {
                 .orElseThrow(() -> new ParcelNotFoundException("Parcel Not Found !"));
         parcelRepository.deleteById(id);
     }
+
+    public Parcel updateParcel(Parcel parcel) {
+        Parcel found = parcelRepository.findById(parcel.getId()).orElseThrow(
+                ()-> new ParcelNotFoundException("Parcel Not Found !")
+        );
+        return parcelRepository.save(parcel);
+    }
 }
