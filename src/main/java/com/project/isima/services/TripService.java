@@ -3,6 +3,7 @@ package com.project.isima.services;
 import com.project.isima.entities.Parcel;
 import com.project.isima.entities.Trip;
 import com.project.isima.entities.User;
+import com.project.isima.exceptions.ParcelNotFoundException;
 import com.project.isima.exceptions.TripNotFoundException;
 import com.project.isima.exceptions.UserNotFoundException;
 import com.project.isima.repositories.TripRepository;
@@ -18,7 +19,6 @@ public class TripService {
 
     @Autowired
     private TripRepository tripRepository;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -45,5 +45,12 @@ public class TripService {
         Trip trip = tripRepository.findById(id)
                 .orElseThrow(() -> new TripNotFoundException("Trip Not Found !"));
         tripRepository.deleteById(id);
+    }
+
+    public Trip updateTrip(Trip trip) {
+        Trip foundTrip = tripRepository.findById(trip.getId()).orElseThrow(
+                ()-> new TripNotFoundException("Trip Not Found !")
+        );
+        return tripRepository.save(trip);
     }
 }
