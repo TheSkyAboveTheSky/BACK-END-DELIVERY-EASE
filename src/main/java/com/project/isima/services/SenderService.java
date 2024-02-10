@@ -1,4 +1,4 @@
-package com.project.isima.enums.services;
+package com.project.isima.services;
 
 import org.springframework.stereotype.Service;
 

@@ -1,2 +1,13 @@
-package com.project.isima.auth;public class AuthenticationRequest {
+package com.project.isima.auth;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthenticationRequest {
+    private String email;
+    private String password;
 }
