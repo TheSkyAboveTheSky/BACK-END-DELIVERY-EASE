@@ -1,34 +1,33 @@
 package com.project.isima.controllers;
 
-import com.project.isima.entities.Parcel;
 import com.project.isima.entities.Trip;
+import com.project.isima.exceptions.UnauthorizedUserException;
 import com.project.isima.services.TripService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/trips")
+@RequestMapping("/api/v1/trips")
+@RequiredArgsConstructor
 public class TripController {
-    @Autowired
-    private TripService tripService;
+    private final TripService tripService;
 
-    @GetMapping("/{deliveryId}")
+    @GetMapping("/all/{deliveryId}")
     public List<Trip> getAllTrips(@PathVariable Long deliveryId) {
         return tripService.getAllTrips(deliveryId);
     }
 
     @PostMapping("/add/{deliveryId}")
-    public Trip addNewTrip(@PathVariable Long deliveryId, @RequestBody Trip trip) {
-        return tripService.addNewTrip(deliveryId, trip);
+    public ResponseEntity<String> addNewTrip(@PathVariable Long deliveryId, @RequestBody Trip trip) throws UnauthorizedUserException {
+        return ResponseEntity.ok(tripService.addNewTrip(deliveryId, trip));
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Trip> updateTrip(@PathVariable Long id, @RequestBody Trip trip) {
-        trip.setId(id);
+    @PutMapping("/update/{idTrip}")
+    public ResponseEntity<Trip> updateTrip(@PathVariable Long idTrip, @RequestBody Trip trip) {
+        trip.setId(idTrip);
         Trip updatedTrip = tripService.updateTrip(trip);
         if (updatedTrip != null) {
             return new ResponseEntity<>(updatedTrip, HttpStatus.OK);
@@ -37,8 +36,8 @@ public class TripController {
         }
     }
 
-    @DeleteMapping("{id}")
-    public void deleteTrip(@PathVariable Long id) {
-        tripService.deleteTrip(id);
+    @DeleteMapping("/delete/{idTrip}")
+    public ResponseEntity<String> deleteTrip(@PathVariable Long idTrip) {
+        return ResponseEntity.ok(tripService.deleteTrip(idTrip));
     }
 }
