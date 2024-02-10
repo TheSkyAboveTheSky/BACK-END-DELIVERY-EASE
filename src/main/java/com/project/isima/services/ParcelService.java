@@ -1,4 +1,4 @@
-package com.project.isima.services;
+package com.project.isima.enums.services;
 
 import com.project.isima.entities.Parcel;
 import com.project.isima.entities.User;
@@ -6,17 +6,19 @@ import com.project.isima.exceptions.ParcelNotFoundException;
 import com.project.isima.exceptions.UserNotFoundException;
 import com.project.isima.repositories.ParcelRepository;
 import com.project.isima.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ParcelService {
-    @Autowired
     private ParcelRepository parcelRepository;
-    @Autowired
     private UserRepository userRepository;
+
+    public ParcelService(ParcelRepository parcelRepository, UserRepository userRepository) {
+        this.parcelRepository = parcelRepository;
+        this.userRepository = userRepository;
+    }
 
     public List<Parcel> getAllParcels(Long senderId) {
         Optional<User> userOptional = userRepository.findById(senderId);

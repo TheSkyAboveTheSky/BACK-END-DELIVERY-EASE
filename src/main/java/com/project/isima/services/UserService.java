@@ -1,10 +1,10 @@
-package com.project.isima.services;
+package com.project.isima.enums.services;
 
 import com.project.isima.entities.User;
 import com.project.isima.exceptions.EmailAlreadyExistsException;
 import com.project.isima.exceptions.UserNotFoundException;
 import com.project.isima.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -12,8 +12,13 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -23,6 +28,9 @@ public class UserService {
         if(userByEmail.isPresent()) {
             throw new EmailAlreadyExistsException("Email taken !");
         }
+
+        String pw = user.getPassword();
+        user.setPassword(passwordEncoder.encode(pw));
         return userRepository.save(user);
     }
 
