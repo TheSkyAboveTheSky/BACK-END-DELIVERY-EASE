@@ -18,8 +18,14 @@ public class Parcel {
     private Long id;
 
     private String identifier;
-    private String destinationAddress;
-    private String shippingAddress;
+    @ManyToOne
+    @JoinColumn(name = "destination_address_id", referencedColumnName = "id")
+    private Address destinationAddress;
+
+    @ManyToOne
+    @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
+    private Address shippingAddress;
+
     private String description;
     @Enumerated(EnumType.STRING)
     private Status status;

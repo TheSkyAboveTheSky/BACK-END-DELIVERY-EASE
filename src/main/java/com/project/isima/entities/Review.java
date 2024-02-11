@@ -18,4 +18,8 @@ public class Review {
     private Integer starRating;
     private String comment;
     private Date reviewDate;
+
+    @ManyToOne
+    @JoinColumn(name = "delivery_id")
+    private Delivery delivery;
 }
