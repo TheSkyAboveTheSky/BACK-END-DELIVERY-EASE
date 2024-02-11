@@ -1,18 +1,21 @@
 package com.project.isima.services;
 
+import com.project.isima.auth.AthenticationResponseMessage;
 import com.project.isima.entities.Parcel;
 import com.project.isima.entities.User;
+import com.project.isima.enums.Role;
 import com.project.isima.enums.Status;
 import com.project.isima.exceptions.ParcelNotFoundException;
 import com.project.isima.exceptions.UnauthorizedUserException;
 import com.project.isima.exceptions.UserNotFoundException;
+import com.project.isima.repositories.AddressRepository;
 import com.project.isima.repositories.ParcelRepository;
 import com.project.isima.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +25,7 @@ import java.util.UUID;
 public class ParcelService {
     private final ParcelRepository parcelRepository;
     private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
 
     public List<Parcel> getAllParcels(Long senderId) {
         Optional<User> userOptional = userRepository.findById(senderId);
@@ -29,10 +33,13 @@ public class ParcelService {
             throw new UserNotFoundException("User not found !");
         }
         User user = userOptional.get();
+        if(!user.getRole().equals(Role.SENDER)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not a sender !");
+        }
         return parcelRepository.findAllByUser(user);
     }
 
-    public String addNewParcel(Long senderId, Parcel parcel) throws UnauthorizedUserException {
+    public AthenticationResponseMessage addNewParcel(Long senderId, Parcel parcel) throws UnauthorizedUserException {
         // Récupérer l'identifiant de l'utilisateur actuellement authentifié
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = userRepository.findById(senderId);
@@ -48,14 +55,17 @@ public class ParcelService {
 
         parcel.setUser(sender);
 
-        String uuid = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10).toUpperCase();
         parcel.setIdentifier(uuid);
 
         parcel.setStatus(Status.UNCONFIRMED);
 
+        addressRepository.save(parcel.getDestinationAddress());
+        addressRepository.save(parcel.getShippingAddress());
+
         parcelRepository.save(parcel);
 
-        return "Le colis a été enregistré avec succès.";
+        return new AthenticationResponseMessage("Le colis a été enregistré avec succès.");
     }
 
     public Parcel updateParcel(Parcel parcel) {
@@ -68,10 +78,10 @@ public class ParcelService {
         return parcelRepository.save(parcel);
     }
 
-    public String deleteParcel(Long idParcel) throws ParcelNotFoundException {
+    public AthenticationResponseMessage deleteParcel(Long idParcel) throws ParcelNotFoundException {
         Parcel parcel = parcelRepository.findById(idParcel)
                 .orElseThrow(() -> new ParcelNotFoundException("Parcel Not Found !"));
         parcelRepository.deleteById(idParcel);
-        return "Le colis a été supprimé avec succès.";
+        return new AthenticationResponseMessage("Le colis a été supprimé avec succès.");
     }
 }

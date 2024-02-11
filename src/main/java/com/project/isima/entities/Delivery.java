@@ -1,11 +1,14 @@
 package com.project.isima.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table
+@Data
 public class Delivery {
     @Id
     private Long id;
