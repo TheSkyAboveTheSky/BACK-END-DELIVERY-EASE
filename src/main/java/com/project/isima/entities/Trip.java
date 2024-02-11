@@ -16,8 +16,14 @@ public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String departureAddress;
-    private String arrivalAddress;
+    @ManyToOne
+    @JoinColumn(name = "departure_address_id", referencedColumnName = "id")
+    private Address departureAddress;
+
+    @ManyToOne
+    @JoinColumn(name = "arrival_address_id", referencedColumnName = "id")
+    private Address arrivalAddress;
+
     private Date departureDate;
     private Date arrivalDate;
     private double cost;
