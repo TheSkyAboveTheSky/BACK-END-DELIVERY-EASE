@@ -24,7 +24,13 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/auth/**").permitAll());
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/parcels/**").hasAuthority("SENDER"));
-        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/**").hasAuthority("DELIVERY_PERSON"));
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/all/**").hasAuthority("DELIVERY_PERSON"));
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/add/**").hasAuthority("DELIVERY_PERSON"));
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/update/**").hasAuthority("DELIVERY_PERSON"));
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/delete/**").hasAuthority("DELIVERY_PERSON"));
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/searchTrips").hasAuthority("SENDER"));
+
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/delivery/**").hasAuthority("SENDER"));
 
         httpSecurity.authorizeHttpRequests(authorize->authorize.anyRequest().authenticated());
 

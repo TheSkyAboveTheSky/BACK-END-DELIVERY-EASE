@@ -1,6 +1,6 @@
 package com.project.isima.services;
 
-import com.project.isima.auth.AthenticationResponseMessage;
+import com.project.isima.auth.ResponseMessage;
 import com.project.isima.auth.AuthenticationRequest;
 import com.project.isima.auth.AuthenticationResponse;
 import com.project.isima.auth.RegisterRequest;
@@ -24,10 +24,10 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AthenticationResponseMessage register(RegisterRequest request) {
+    public ResponseMessage register(RegisterRequest request) {
         Optional<User> u = userRepository.findUserByEmail(request.getEmail());
         if(u.isPresent()) {
-            return new AthenticationResponseMessage("Un compte avec cet e-mail existe déjà.");
+            return new ResponseMessage("Un compte avec cet e-mail existe déjà.");
         }
         var user = User.builder()
                 .firstName(request.getFirstName())
@@ -37,7 +37,7 @@ public class AuthenticationService {
                 .role(request.getRole())
                 .build();
         userRepository.save(user);
-        return new AthenticationResponseMessage("Le compte a été créé avec succès.");
+        return new ResponseMessage("Le compte a été créé avec succès.");
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
