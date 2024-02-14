@@ -1,6 +1,8 @@
 package com.project.isima.entities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.isima.dtos.UserDTO;
 import com.project.isima.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

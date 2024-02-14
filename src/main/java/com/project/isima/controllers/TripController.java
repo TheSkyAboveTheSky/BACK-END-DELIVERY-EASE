@@ -1,7 +1,8 @@
 package com.project.isima.controllers;
 
-import com.project.isima.auth.AthenticationResponseMessage;
-import com.project.isima.entities.Parcel;
+import com.project.isima.auth.ResponseMessage;
+import com.project.isima.dtos.TripDTO;
+import com.project.isima.entities.SearchTripsRequest;
 import com.project.isima.entities.Trip;
 import com.project.isima.exceptions.UnauthorizedUserException;
 import com.project.isima.exceptions.UserNotFoundException;
@@ -19,20 +20,25 @@ import java.util.List;
 public class TripController {
     private final TripService tripService;
 
-    @GetMapping("/all/{deliveryId}")
-    public ResponseEntity<List<Trip>> getAllTrips(@PathVariable Long deliveryId) {
+    @GetMapping("/all")
+    public ResponseEntity<List<Trip>> getAllTrips() {
         List<Trip> trips;
         try {
-            trips = tripService.getAllTrips(deliveryId);
+            trips = tripService.getAllTrips();
         } catch (UserNotFoundException e) {
-            return ResponseEntity.notFound().build(); // Retourne une réponse 404
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(trips);
     }
 
-    @PostMapping("/add/{deliveryId}")
-    public ResponseEntity<AthenticationResponseMessage> addNewTrip(@PathVariable Long deliveryId, @RequestBody Trip trip) throws UnauthorizedUserException {
-        return ResponseEntity.ok(tripService.addNewTrip(deliveryId, trip));
+    @PostMapping("/searchTrips")
+    public ResponseEntity<List<TripDTO>> searchTrips(@RequestBody SearchTripsRequest searchTripsRequest) {
+        return ResponseEntity.ok(tripService.searchTrips(searchTripsRequest));
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<ResponseMessage> addNewTrip(@RequestBody Trip trip) throws UnauthorizedUserException {
+        return ResponseEntity.ok(tripService.addNewTrip(trip));
     }
 
     @PutMapping("/update/{idTrip}")
@@ -47,7 +53,7 @@ public class TripController {
     }
 
     @DeleteMapping("/delete/{idTrip}")
-    public ResponseEntity<AthenticationResponseMessage> deleteTrip(@PathVariable Long idTrip) {
+    public ResponseEntity<ResponseMessage> deleteTrip(@PathVariable Long idTrip) {
         return ResponseEntity.ok(tripService.deleteTrip(idTrip));
     }
 }

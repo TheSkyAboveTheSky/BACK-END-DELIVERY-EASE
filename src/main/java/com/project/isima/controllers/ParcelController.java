@@ -1,6 +1,6 @@
 package com.project.isima.controllers;
 
-import com.project.isima.auth.AthenticationResponseMessage;
+import com.project.isima.auth.ResponseMessage;
 import com.project.isima.entities.Parcel;
 import com.project.isima.exceptions.UnauthorizedUserException;
 import com.project.isima.exceptions.UserNotFoundException;
@@ -19,20 +19,20 @@ public class ParcelController {
 
     private final ParcelService parcelService;
 
-    @GetMapping("/all/{senderId}")
-    public ResponseEntity<List<Parcel>> getAllParcels(@PathVariable Long senderId) {
+    @GetMapping("/all")
+    public ResponseEntity<List<Parcel>> getAllParcels() {
         List<Parcel> parcels;
         try {
-            parcels = parcelService.getAllParcels(senderId);
+            parcels = parcelService.getAllParcels();
         } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build(); // Retourne une réponse 404
         }
         return ResponseEntity.ok(parcels);
     }
 
-    @PostMapping("/add/{senderId}")
-    public ResponseEntity<AthenticationResponseMessage> addNewParcel(@PathVariable Long senderId, @RequestBody Parcel parcel) throws UnauthorizedUserException {
-        return ResponseEntity.ok(parcelService.addNewParcel(senderId, parcel));
+    @PostMapping("/add")
+    public ResponseEntity<ResponseMessage> addNewParcel(@RequestBody Parcel parcel) throws UnauthorizedUserException {
+        return ResponseEntity.ok(parcelService.addNewParcel(parcel));
     }
 
     @PutMapping("/update/{idParcel}")
@@ -47,7 +47,7 @@ public class ParcelController {
     }
 
     @DeleteMapping("/delete/{idParcel}")
-    public ResponseEntity<AthenticationResponseMessage> deleteParcel(@PathVariable Long idParcel) {
+    public ResponseEntity<ResponseMessage> deleteParcel(@PathVariable Long idParcel) {
         return ResponseEntity.ok(parcelService.deleteParcel(idParcel));
     }
 

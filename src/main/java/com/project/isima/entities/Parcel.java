@@ -16,16 +16,13 @@ public class Parcel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String identifier;
-    @ManyToOne
-    @JoinColumn(name = "destination_address_id", referencedColumnName = "id")
-    private Address destinationAddress;
-
     @ManyToOne
     @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
     private Address shippingAddress;
-
+    @ManyToOne
+    @JoinColumn(name = "destination_address_id", referencedColumnName = "id")
+    private Address destinationAddress;
     private String description;
     @Enumerated(EnumType.STRING)
     private Status status;
