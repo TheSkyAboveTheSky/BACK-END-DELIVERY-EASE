@@ -21,8 +21,8 @@ public class TripController {
     private final TripService tripService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Trip>> getAllTrips() {
-        List<Trip> trips;
+    public ResponseEntity<List<TripDTO>> getAllTrips() {
+        List<TripDTO> trips;
         try {
             trips = tripService.getAllTrips();
         } catch (UserNotFoundException e) {

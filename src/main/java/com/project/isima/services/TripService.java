@@ -34,17 +34,15 @@ public class TripService {
     private final AddressRepository addressRepository;
     private final TripDTOMapper tripDTOMapper;
 
-    public List<Trip> getAllTrips() {
+    public List<TripDTO> getAllTrips() {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> userOptional = userRepository.findUserByEmail(authenticatedUserEmail);
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException("User not found !");
-        }
         User user = userOptional.get();
         if(!user.getRole().equals(Role.DELIVERY_PERSON)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not a delivery person!");
         }
-        return tripRepository.findAllByUser(user);
+        List<TripDTO> list = tripRepository.findAllByUser(user).stream().map(trip -> new TripDTO(new AddressDTO(trip.getDepartureAddress().getId(), trip.getDepartureAddress().getCity()), new AddressDTO(trip.getArrivalAddress().getId(), trip.getArrivalAddress().getCity()), trip.getDepartureDate())).toList();
+        return list;
     }
 
     public ResponseMessage addNewTrip(Trip trip) throws UnauthorizedUserException{

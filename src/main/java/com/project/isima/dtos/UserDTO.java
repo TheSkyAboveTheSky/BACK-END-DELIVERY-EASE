@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.*;
+
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserDTO {
     Long id;
     String firstName;
@@ -15,4 +16,11 @@ public class UserDTO {
     byte[] picture;
     String email;
     double rating = 0.00;
+
+    public UserDTO(String firstName, String lastName, String phoneNumber, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
 }

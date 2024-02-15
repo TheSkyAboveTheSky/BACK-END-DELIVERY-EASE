@@ -1,8 +1,10 @@
 package com.project.isima.controllers;
 
+import com.project.isima.dtos.UserDTO;
 import com.project.isima.entities.User;
 import com.project.isima.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -22,6 +24,12 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
+    }
+
+
+    @PutMapping("/upadateUserInfo")
+    public ResponseEntity<UserDTO> updateUserInfo(@RequestBody User user) {
+        return ResponseEntity.ok(userService.updateUserInfo(user));
     }
 
     @DeleteMapping("/{id}")
