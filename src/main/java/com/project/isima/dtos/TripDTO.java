@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+
 public class TripDTO {
     Long id;
     AddressDTO departureAddress;
@@ -17,4 +17,9 @@ public class TripDTO {
     double cost;
     String description;
     UserDTO user;
+    public TripDTO(AddressDTO departureAddress, AddressDTO arrivalAddress, Date departureDate) {
+        this.departureAddress = departureAddress;
+        this.arrivalAddress = arrivalAddress;
+        this.departureDate = departureDate;
+    }
 }
