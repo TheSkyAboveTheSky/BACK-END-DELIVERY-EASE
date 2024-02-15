@@ -2,6 +2,7 @@ package com.project.isima.controllers;
 
 import com.project.isima.auth.ResponseMessage;
 import com.project.isima.dtos.TripDTO;
+import com.project.isima.dtos.TripDTOForDelivery;
 import com.project.isima.entities.SearchTripsRequest;
 import com.project.isima.entities.Trip;
 import com.project.isima.exceptions.UnauthorizedUserException;
@@ -21,8 +22,8 @@ public class TripController {
     private final TripService tripService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<TripDTO>> getAllTrips() {
-        List<TripDTO> trips;
+    public ResponseEntity<List<TripDTOForDelivery>> getAllTrips() {
+        List<TripDTOForDelivery> trips;
         try {
             trips = tripService.getAllTrips();
         } catch (UserNotFoundException e) {
