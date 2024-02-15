@@ -3,6 +3,7 @@ package com.project.isima.services;
 import com.project.isima.auth.ResponseMessage;
 import com.project.isima.dtos.AddressDTO;
 import com.project.isima.dtos.TripDTO;
+import com.project.isima.dtos.TripDTOForDelivery;
 import com.project.isima.entities.SearchTripsRequest;
 import com.project.isima.entities.Trip;
 import com.project.isima.entities.User;
@@ -34,14 +35,14 @@ public class TripService {
     private final AddressRepository addressRepository;
     private final TripDTOMapper tripDTOMapper;
 
-    public List<TripDTO> getAllTrips() {
+    public List<TripDTOForDelivery> getAllTrips() {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> userOptional = userRepository.findUserByEmail(authenticatedUserEmail);
         User user = userOptional.get();
         if(!user.getRole().equals(Role.DELIVERY_PERSON)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not a delivery person!");
         }
-        List<TripDTO> list = tripRepository.findAllByUser(user).stream().map(trip -> new TripDTO(new AddressDTO(trip.getDepartureAddress().getId(), trip.getDepartureAddress().getCity()), new AddressDTO(trip.getArrivalAddress().getId(), trip.getArrivalAddress().getCity()), trip.getDepartureDate())).toList();
+        List<TripDTOForDelivery> list = tripRepository.findAllByUser(user).stream().map(trip -> new TripDTOForDelivery(trip.getId(), new AddressDTO(trip.getDepartureAddress().getId(), trip.getDepartureAddress().getCity()), new AddressDTO(trip.getArrivalAddress().getId(), trip.getArrivalAddress().getCity()), trip.getDepartureDate(), trip.getArrivalDate())).toList();
         return list;
     }
 
