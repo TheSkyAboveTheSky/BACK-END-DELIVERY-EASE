@@ -82,6 +82,10 @@ public class DeliveryService {
 
         parcel.setStatus(actionResponse.getAction());
 
+        if(actionResponse.getAction().equals(Status.DELIVERED)) {
+            deliveryRepository.updateDateDeliveryByParcelId(actionResponse.getId());
+        }
+
         if(actionResponse.getAction().equals(Status.REFUSED)) {
             deliveryRepository.deleteParcel(actionResponse.getId());
         }
