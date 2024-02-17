@@ -10,7 +10,7 @@ public class UserDTO {
     String firstName;
     String lastName;
     String phoneNumber;
-    byte[] picture;
+    String picture;
     String email;
     double rating = 0.00;
 
