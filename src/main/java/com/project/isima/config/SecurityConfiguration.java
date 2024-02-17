@@ -29,14 +29,9 @@ public class SecurityConfiguration {
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/update/**").hasAuthority("DELIVERY_PERSON"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/delete/**").hasAuthority("DELIVERY_PERSON"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/searchTrips").hasAuthority("SENDER"));
-
-        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/delivery/**").hasAuthority("SENDER"));
-
         httpSecurity.authorizeHttpRequests(authorize->authorize.anyRequest().authenticated());
-
         httpSecurity
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
         httpSecurity
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
