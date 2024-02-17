@@ -3,18 +3,20 @@ package com.project.isima.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.isima.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +25,7 @@ import java.util.List;
 @Builder
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,8 +35,8 @@ public class User implements UserDetails {
     @NotNull(message = "Last Name should not be null")
     private String lastName;
     private String phoneNumber;
-    @Lob
-    private byte[] picture;
+    private String picture;
+
     @Column(unique = true)
     @Email(message = "Invalid email format")
     @NotNull(message = "Email should not be null")
