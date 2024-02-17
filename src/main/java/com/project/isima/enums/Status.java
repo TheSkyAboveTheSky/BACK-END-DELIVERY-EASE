@@ -1,10 +1,10 @@
 package com.project.isima.enums;
 
 public enum Status {
+    UNSELECTED,
     UNCONFIRMED,
-    CONFIRMED,
-    IN_PROGRESS,
     ACCEPTED,
+    REFUSED,
     IN_TRANSIT,
     DELIVERED
 }
