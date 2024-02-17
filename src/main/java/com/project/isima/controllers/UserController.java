@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -27,9 +28,9 @@ public class UserController {
     }
 
 
-    @PutMapping("/upadateUserInfo")
-    public ResponseEntity<UserDTO> updateUserInfo(@RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUserInfo(user));
+    @PatchMapping ("/upadateUserInfo")
+    public ResponseEntity<UserDTO> updateUserInfo(@RequestBody Map<String, Object> fields) {
+        return ResponseEntity.ok(userService.updateUserInfo(fields));
     }
 
     @DeleteMapping("/{id}")
