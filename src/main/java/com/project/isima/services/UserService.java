@@ -1,6 +1,7 @@
 package com.project.isima.services;
 
 import com.project.isima.dtos.UserDTO;
+import com.project.isima.dtos.UserDTOAuthenticate;
 import com.project.isima.entities.User;
 import com.project.isima.exceptions.UserNotFoundException;
 import com.project.isima.repositories.UserRepository;
@@ -24,9 +25,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUserById(Long id) {
-        return  userRepository.findById(id)
+    public UserDTOAuthenticate getUserInfosById(Long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found !"));
+        return new UserDTOAuthenticate(user.getFirstName(), user.getLastName());
     }
 
     public  User getUserByEmail(String email) {

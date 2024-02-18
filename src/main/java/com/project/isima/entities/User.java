@@ -3,7 +3,6 @@ package com.project.isima.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.isima.enums.Role;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -35,8 +34,7 @@ public class User implements UserDetails {
     @NotNull(message = "Last Name should not be null")
     private String lastName;
     private String phoneNumber;
-    private String picture;
-
+    private String picturePath;
     @Column(unique = true)
     @Email(message = "Invalid email format")
     @NotNull(message = "Email should not be null")
