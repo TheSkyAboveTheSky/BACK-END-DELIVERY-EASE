@@ -17,4 +17,5 @@ public class AuthenticationResponse {
     private String lastName;
     private String phoneNumber;
     private Role role;
+    private String message;
 }

@@ -6,6 +6,7 @@ import com.project.isima.auth.AuthenticationResponse;
 import com.project.isima.auth.RegisterRequest;
 import com.project.isima.config.JwtService;
 import com.project.isima.entities.User;
+import com.project.isima.enums.AccountStatus;
 import com.project.isima.exceptions.UserNotFoundException;
 import com.project.isima.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
+                .accountStatus(AccountStatus.ACTIVATED)
                 .build();
 
         userRepository.save(user);
@@ -54,6 +56,12 @@ public class AuthenticationService {
         );
         var user = userRepository.findUserByEmail(request.getEmail())
                 .orElseThrow(()-> new UserNotFoundException("User avec ce mail " + request.getEmail() + " n'existe pas"));
+        if(user.getAccountStatus().equals(AccountStatus.DEACTIVATED)) {
+            return AuthenticationResponse
+                    .builder()
+                    .message("Votre compte est désactivé. Merci de contacter votre administrateur.")
+                    .build();
+        }
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse
                 .builder()
@@ -63,6 +71,7 @@ public class AuthenticationService {
                 .lastName(user.getLastName())
                 .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
+                .message("Authentification réussie, Votre compte est activé.")
                 .build();
     }
 }

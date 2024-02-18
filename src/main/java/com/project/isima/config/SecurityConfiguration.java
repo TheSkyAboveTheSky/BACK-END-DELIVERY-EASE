@@ -10,6 +10,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(csrf -> csrf.disable())
+                .cors(withDefaults())
                 .authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/auth/**").permitAll());
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/parcels/**").hasAuthority("SENDER"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/all/**").hasAuthority("DELIVERY_PERSON"));
@@ -29,6 +32,9 @@ public class SecurityConfiguration {
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/update/**").hasAuthority("DELIVERY_PERSON"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/delete/**").hasAuthority("DELIVERY_PERSON"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/searchTrips").hasAuthority("SENDER"));
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/users/all").hasAuthority("ADMIN"));
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/users/updateAccountStatus/**").hasAuthority("ADMIN"));
+
         httpSecurity.authorizeHttpRequests(authorize->authorize.anyRequest().authenticated());
         httpSecurity
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

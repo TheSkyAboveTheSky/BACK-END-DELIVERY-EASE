@@ -1,8 +1,9 @@
 package com.project.isima.controllers;
 
+import com.project.isima.auth.ResponseMessage;
 import com.project.isima.dtos.UserDTO;
-import com.project.isima.dtos.UserDTOAuthenticate;
-import com.project.isima.entities.User;
+import com.project.isima.dtos.UserDTOById;
+import com.project.isima.dtos.UserForAdmin;
 import com.project.isima.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +19,29 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/all")
+    public ResponseEntity<List<UserForAdmin>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/getUserInfos/{id}")
-    public ResponseEntity<UserDTOAuthenticate> getUserInfosById(@PathVariable Long id) {
+    public ResponseEntity<UserDTOById> getUserInfosById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserInfosById(id));
     }
 
+    @GetMapping("/getMyInfos")
+    public ResponseEntity<UserDTO> getMyInfos() {
+        return ResponseEntity.ok(userService.getMyInfos());
+    }
 
     @PatchMapping ("/upadateUserInfo")
     public ResponseEntity<UserDTO> updateUserInfo(@RequestBody Map<String, Object> fields) {
         return ResponseEntity.ok(userService.updateUserInfo(fields));
+    }
+
+    @PatchMapping ("/updateAccountStatus/{id}")
+    public ResponseEntity<ResponseMessage> updateUserAccountStatus(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
+        return ResponseEntity.ok(userService.updateUserAccountStatus(id, fields));
     }
 
     @DeleteMapping("/{id}")
