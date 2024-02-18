@@ -80,7 +80,7 @@ public class DeliveryService {
         Parcel parcel = parcelRepository.findById(actionResponse.getId())
                 .orElseThrow(() -> new ParcelNotFoundException("Parcel Not Found."));
 
-        parcel.setStatus(actionResponse.getAction());
+        parcel.setStatus(actionResponse.getAction().equals(Status.REFUSED) ? Status.UNSELECTED : actionResponse.getAction());
 
         if(actionResponse.getAction().equals(Status.DELIVERED)) {
             deliveryRepository.updateDateDeliveryByParcelId(actionResponse.getId());
