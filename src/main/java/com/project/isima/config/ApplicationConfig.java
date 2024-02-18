@@ -1,7 +1,12 @@
 package com.project.isima.config;
 
+import com.project.isima.entities.User;
+import com.project.isima.enums.AccountStatus;
+import com.project.isima.enums.Role;
 import com.project.isima.repositories.UserRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -14,14 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
+import static com.project.isima.auth.AuthenticationController.DIRECTORY;
 
 @Configuration
 @RequiredArgsConstructor
@@ -51,6 +50,26 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CommandLineRunner createAdminAccount(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            Optional<User> adminUser = userRepository.findByRole(Role.ADMIN);
+
+            if (adminUser.isEmpty()) {
+                User admin = User.builder()
+                        .firstName("Admin")
+                        .lastName("Admin")
+                        .email("admin@gmail.com")
+                        .password(passwordEncoder.encode("123456"))
+                        .role(Role.ADMIN)
+                        .picturePath(DIRECTORY+"Anonyme.jpg")
+                        .accountStatus(AccountStatus.ACTIVATED)
+                        .build();
+                userRepository.save(admin);
+            }
+        };
     }
 
 }

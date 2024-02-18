@@ -1,6 +1,7 @@
 package com.project.isima.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.isima.enums.AccountStatus;
 import com.project.isima.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -46,6 +47,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Role should not be null")
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private AccountStatus accountStatus;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

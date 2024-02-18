@@ -61,6 +61,7 @@ public class AuthenticationController {
                         .lastName(response.getLastName())
                         .phoneNumber(response.getPhoneNumber())
                         .role(response.getRole())
+                        .message(response.getMessage())
                         .build());
     }
 
