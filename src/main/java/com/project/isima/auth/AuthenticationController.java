@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,11 +21,30 @@ import java.util.Map;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    public final static String DIRECTORY = "pictures/";
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register")
     public ResponseEntity<ResponseMessage> register(
+            @RequestParam(value = "picture", required = false) MultipartFile picture,
             @Valid @RequestBody RegisterRequest request
-    ){
+    ) throws IOException {
+        if(picture == null || picture.isEmpty()) {
+            request.setPicturePath(DIRECTORY+ "Anonyme.jpg");
+        } else {
+            String fileName = picture.getOriginalFilename();
+            String pictureUrl = DIRECTORY + fileName;
+            // Get the absolute path to the images directory within the project
+            String absolutePath = new File("src/main/resources/" + DIRECTORY).getAbsolutePath();
+            // Create the images directory if it doesn't exist
+            File imageDir = new File(absolutePath);
+            if (!imageDir.exists()) {
+                imageDir.mkdirs();
+            }
+            // Save the image file to the server
+            File image = new File(imageDir, fileName);
+            picture.transferTo(image);
+            request.setPicturePath(pictureUrl);
+        }
         return ResponseEntity.ok(authenticationService.register(request));
     }
 

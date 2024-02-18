@@ -24,4 +24,9 @@ public class UserDTO {
         this.phoneNumber = phoneNumber;
         this.email = email;
     }
+
+    public UserDTO(Long id, String firstName, String lastName, String phoneNumber, String email) {
+        this(firstName, lastName, phoneNumber, email);
+        this.id = id;
+    }
 }

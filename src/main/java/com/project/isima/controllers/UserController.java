@@ -1,6 +1,7 @@
 package com.project.isima.controllers;
 
 import com.project.isima.dtos.UserDTO;
+import com.project.isima.dtos.UserDTOAuthenticate;
 import com.project.isima.entities.User;
 import com.project.isima.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    @GetMapping("/getUserInfos/{id}")
+    public ResponseEntity<UserDTOAuthenticate> getUserInfosById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserInfosById(id));
     }
 
 
