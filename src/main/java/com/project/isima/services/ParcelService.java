@@ -56,7 +56,7 @@ public class ParcelService {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10).toUpperCase();
         parcel.setIdentifier(uuid);
 
-        parcel.setStatus(Status.UNCONFIRMED);
+        parcel.setStatus(Status.UNSELECTED);
 
         addressRepository.save(parcel.getDestinationAddress());
         addressRepository.save(parcel.getShippingAddress());

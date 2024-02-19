@@ -1,5 +1,6 @@
 package com.project.isima.dtos;
 
+import com.project.isima.enums.AccountStatus;
 import com.project.isima.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,4 +17,5 @@ public class UserForAdmin {
     String email;
     String picture;
     Role role;
+    AccountStatus accountStatus;
 }

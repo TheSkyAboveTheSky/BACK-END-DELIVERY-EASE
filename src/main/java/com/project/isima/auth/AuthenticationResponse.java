@@ -17,6 +17,6 @@ public class AuthenticationResponse {
     private String lastName;
     private String phoneNumber;
     private Role role;
-    private byte[] picture;
+    private String picture;
     private String message;
 }

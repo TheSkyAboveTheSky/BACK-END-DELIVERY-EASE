@@ -3,9 +3,9 @@ package com.project.isima.services;
 import com.project.isima.auth.ResponseMessage;
 import com.project.isima.dtos.ReviewUser;
 import com.project.isima.dtos.UserDTO;
-import com.project.isima.dtos.UserDTOById;
 import com.project.isima.dtos.UserForAdmin;
 import com.project.isima.entities.Parcel;
+import com.project.isima.entities.ResponsePicture;
 import com.project.isima.entities.User;
 import com.project.isima.enums.Role;
 import com.project.isima.exceptions.UserNotFoundException;
@@ -19,13 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import static com.project.isima.auth.AuthenticationController.ABSOLUTE_PATH;
-import static com.project.isima.auth.AuthenticationController.DIRECTORY;
+import static com.project.isima.entities.ImageConstants.*;
 
 @Service
 @AllArgsConstructor
@@ -38,22 +35,22 @@ public class UserService {
         List<User> users = userRepository.findAll();
         List<UserForAdmin> userDTOList = users.stream()
                 .filter(user -> !user.getRole().equals(Role.ADMIN))
-                .map(user -> new UserForAdmin(user.getId(),user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), user.getPicturePath(), user.getRole()))
+                .map(user -> new UserForAdmin(user.getId(),user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), BASE_URL + user.getPicturePath(), user.getRole(), user.getAccountStatus()))
                 .toList();
         return userDTOList;
     }
 
-    public UserDTOById getUserInfosById(Long id) {
+    public UserDTO getUserInfosById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found !"));
-        return new UserDTOById(user.getFirstName(), user.getLastName());
+        return new UserDTO(user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), BASE_URL + user.getPicturePath());
     }
 
     public UserDTO getMyInfos() {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(authenticatedUserEmail)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found !"));
-        return new UserDTO(user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail());
+        return new UserDTO(user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), BASE_URL + user.getPicturePath());
     }
 
     public List<Parcel> getParcelsOfUserById(Long id) {
@@ -88,13 +85,12 @@ public class UserService {
         return null;
     }
 
-    public byte[] updateUserPictureProfile(MultipartFile picture) throws IOException {
+    public ResponsePicture updateUserPictureProfile(MultipartFile picture) throws IOException {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> foundUser = userRepository.findUserByEmail(authenticatedUserEmail);
 
         if(picture != null && foundUser.isPresent()) {
             String fileName = picture.getOriginalFilename();
-            String pictureUrl = DIRECTORY + fileName;
             File imageDir = new File(ABSOLUTE_PATH + "\\" + DIRECTORY);
             if (!imageDir.exists()) {
                 imageDir.mkdirs();
@@ -104,13 +100,11 @@ public class UserService {
             picture.transferTo(image);
 
             User user = foundUser.get();
-            user.setPicturePath(pictureUrl);
+            user.setPicturePath(fileName);
             userRepository.save(user);
-
-            return Files.readAllBytes(new File(ABSOLUTE_PATH+"\\"+pictureUrl).toPath());
-        }
-        if(foundUser.isPresent() && picture == null) {
-            return Files.readAllBytes(new File(ABSOLUTE_PATH+"\\"+foundUser.get().getPicturePath()).toPath());
+            return new ResponsePicture(BASE_URL + user.getPicturePath());
+        }else if(picture == null && foundUser.isPresent()) {
+            return new ResponsePicture(BASE_URL + foundUser.get().getPicturePath());
         }
         return null;
     }

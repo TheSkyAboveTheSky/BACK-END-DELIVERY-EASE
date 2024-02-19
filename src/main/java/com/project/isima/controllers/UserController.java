@@ -3,13 +3,11 @@ package com.project.isima.controllers;
 import com.project.isima.auth.ResponseMessage;
 import com.project.isima.dtos.ReviewUser;
 import com.project.isima.dtos.UserDTO;
-import com.project.isima.dtos.UserDTOById;
 import com.project.isima.dtos.UserForAdmin;
 import com.project.isima.entities.Parcel;
+import com.project.isima.entities.ResponsePicture;
 import com.project.isima.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/getUserInfos/{id}")
-    public ResponseEntity<UserDTOById> getUserInfosById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserInfosById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserInfosById(id));
     }
 
@@ -56,11 +54,8 @@ public class UserController {
     }
 
     @PatchMapping ("/updateUserPicture")
-    public ResponseEntity<?> updateUserPicture(@RequestParam(value = "picture", required = false) MultipartFile picture) throws IOException {
-        byte[] img = userService.updateUserPictureProfile(picture);
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(img);
+    public ResponseEntity<ResponsePicture> updateUserPicture(@RequestParam(value = "picture", required = false) MultipartFile picture) throws IOException {
+        return ResponseEntity.ok(userService.updateUserPictureProfile(picture));
     }
 
     @PatchMapping ("/updateAccountStatus/{id}")
