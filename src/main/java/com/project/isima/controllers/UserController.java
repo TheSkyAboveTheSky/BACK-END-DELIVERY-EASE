@@ -52,7 +52,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUserInfo(fields));
     }
 
-    @PatchMapping ("/updateUser/{id}")
+    @PatchMapping ("/updateAccountStatus/{id}")
     public ResponseEntity<ResponseMessage> updateUserAccountStatus(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
         return ResponseEntity.ok(userService.updateUserAccountStatus(id, fields));
     }
