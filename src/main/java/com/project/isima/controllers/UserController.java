@@ -6,11 +6,14 @@ import com.project.isima.dtos.UserDTO;
 import com.project.isima.dtos.UserDTOById;
 import com.project.isima.dtos.UserForAdmin;
 import com.project.isima.entities.Parcel;
-import com.project.isima.entities.Review;
 import com.project.isima.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -47,9 +50,17 @@ public class UserController {
         return ResponseEntity.ok(userService.getReviewOfUserById(id));
     }
 
-    @PatchMapping ("/upadateUserInfo")
+    @PatchMapping ("/updateUserInfo")
     public ResponseEntity<UserDTO> updateUserInfo(@RequestBody Map<String, Object> fields) {
         return ResponseEntity.ok(userService.updateUserInfo(fields));
+    }
+
+    @PatchMapping ("/updateUserPicture")
+    public ResponseEntity<?> updateUserPicture(@RequestParam(value = "picture", required = false) MultipartFile picture) throws IOException {
+        byte[] img = userService.updateUserPictureProfile(picture);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(img);
     }
 
     @PatchMapping ("/updateAccountStatus/{id}")

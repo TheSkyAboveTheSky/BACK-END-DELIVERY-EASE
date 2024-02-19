@@ -64,7 +64,7 @@ public class ApplicationConfig {
                         .email("admin@gmail.com")
                         .password(passwordEncoder.encode("123456"))
                         .role(Role.ADMIN)
-                        .picturePath(DIRECTORY+"Anonyme.jpg")
+                        .picturePath(DIRECTORY+"Anonyme.jpeg")
                         .accountStatus(AccountStatus.ACTIVATED)
                         .build();
                 userRepository.save(admin);

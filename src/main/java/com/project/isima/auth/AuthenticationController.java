@@ -24,6 +24,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
     public final static String DIRECTORY = "pictures/";
+    public final static String ABSOLUTE_PATH = Paths.get("src", "main", "resources").toAbsolutePath().toString();
 
     @PostMapping(value = "/register")
     public ResponseEntity<ResponseMessage> register(
@@ -31,13 +32,12 @@ public class AuthenticationController {
             @Valid @RequestBody RegisterRequest request
     ) throws IOException {
         if(picture == null || picture.isEmpty()) {
-            request.setPicturePath(DIRECTORY+ "Anonyme.jpg");
+            request.setPicturePath(DIRECTORY+ "Anonyme.jpeg");
         } else {
             String fileName = picture.getOriginalFilename();
             String pictureUrl = DIRECTORY + fileName;
-            // Get the absolute path to the images directory within the project
-            String absolutePath = Paths.get("src", "main", "resources", DIRECTORY).toAbsolutePath().toString();            // Create the images directory if it doesn't exist
-            File imageDir = new File(absolutePath);
+            // Create the images directory if it doesn't exist
+            File imageDir = new File(ABSOLUTE_PATH + "\\" + DIRECTORY);
             if (!imageDir.exists()) {
                 imageDir.mkdirs();
             }
@@ -52,7 +52,7 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @Valid @RequestBody AuthenticationRequest request
-    ) {
+    ) throws IOException {
         AuthenticationResponse response = authenticationService.authenticate(request);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(AuthenticationResponse.builder()
@@ -62,6 +62,7 @@ public class AuthenticationController {
                         .lastName(response.getLastName())
                         .phoneNumber(response.getPhoneNumber())
                         .role(response.getRole())
+                        .picture(response.getPicture())
                         .message(response.getMessage())
                         .build());
     }
