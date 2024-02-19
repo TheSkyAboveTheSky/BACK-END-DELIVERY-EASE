@@ -1,9 +1,12 @@
 package com.project.isima.controllers;
 
 import com.project.isima.auth.ResponseMessage;
+import com.project.isima.dtos.ReviewUser;
 import com.project.isima.dtos.UserDTO;
 import com.project.isima.dtos.UserDTOById;
 import com.project.isima.dtos.UserForAdmin;
+import com.project.isima.entities.Parcel;
+import com.project.isima.entities.Review;
 import com.project.isima.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +35,16 @@ public class UserController {
     @GetMapping("/getMyInfos")
     public ResponseEntity<UserDTO> getMyInfos() {
         return ResponseEntity.ok(userService.getMyInfos());
+    }
+
+    @GetMapping("/getUserParcels/{id}")
+    public ResponseEntity<List<Parcel>> getParcelsOfUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getParcelsOfUserById(id));
+    }
+
+    @GetMapping("/getUserReviews/{id}")
+    public ResponseEntity<List<ReviewUser>> getReviewsOfUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getReviewOfUserById(id));
     }
 
     @PatchMapping ("/upadateUserInfo")

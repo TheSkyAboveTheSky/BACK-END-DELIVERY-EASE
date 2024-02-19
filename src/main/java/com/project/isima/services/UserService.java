@@ -1,13 +1,17 @@
 package com.project.isima.services;
 
 import com.project.isima.auth.ResponseMessage;
+import com.project.isima.dtos.ReviewUser;
 import com.project.isima.dtos.UserDTO;
 import com.project.isima.dtos.UserDTOById;
 import com.project.isima.dtos.UserForAdmin;
+import com.project.isima.entities.Parcel;
+import com.project.isima.entities.Review;
 import com.project.isima.entities.User;
 import com.project.isima.enums.AccountStatus;
 import com.project.isima.enums.Role;
 import com.project.isima.exceptions.UserNotFoundException;
+import com.project.isima.repositories.ParcelRepository;
 import com.project.isima.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +28,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ParcelRepository parcelRepository;
 
     public List<UserForAdmin> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -45,6 +50,20 @@ public class UserService {
         User user = userRepository.findUserByEmail(authenticatedUserEmail)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found !"));
         return new UserDTO(user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail());
+    }
+
+    public List<Parcel> getParcelsOfUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User Not Found !"));
+        if(user.getRole().equals(Role.DELIVERY_PERSON)) {
+            return  null;
+        }
+        List<Parcel> parcelsList = parcelRepository.findAllByUser(user);
+        return parcelsList;
+    }
+
+    public List<ReviewUser> getReviewOfUserById(Long id){
+        return null; // TO DO...
     }
 
     public UserDTO updateUserInfo(Map<String, Object> fields) {

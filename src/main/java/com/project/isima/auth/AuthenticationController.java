@@ -4,6 +4,7 @@ import com.project.isima.services.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,8 +36,7 @@ public class AuthenticationController {
             String fileName = picture.getOriginalFilename();
             String pictureUrl = DIRECTORY + fileName;
             // Get the absolute path to the images directory within the project
-            String absolutePath = new File("src/main/resources/" + DIRECTORY).getAbsolutePath();
-            // Create the images directory if it doesn't exist
+            String absolutePath = Paths.get("src", "main", "resources", DIRECTORY).toAbsolutePath().toString();            // Create the images directory if it doesn't exist
             File imageDir = new File(absolutePath);
             if (!imageDir.exists()) {
                 imageDir.mkdirs();
