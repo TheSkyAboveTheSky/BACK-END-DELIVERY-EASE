@@ -4,12 +4,10 @@ import com.project.isima.entities.User;
 import com.project.isima.enums.AccountStatus;
 import com.project.isima.enums.Role;
 import com.project.isima.repositories.UserRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,14 +17,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import static com.project.isima.entities.ImageConstants.*;
 import java.util.Optional;
-import static com.project.isima.auth.AuthenticationController.DIRECTORY;
 
 @Configuration
 @RequiredArgsConstructor
-public class ApplicationConfig {
+public class ApplicationConfig implements WebMvcConfigurer {
 
     private final UserRepository userRepository;
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String path = "file:///" + ABSOLUTE_PATH + "/" + DIRECTORY;
+        registry.addResourceHandler("/content/**")
+                .addResourceLocations(path);
+    }
 
     @Bean
     public UserDetailsService userDetailsService(){

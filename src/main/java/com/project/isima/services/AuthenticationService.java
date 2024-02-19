@@ -14,15 +14,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.Optional;
 
-import static com.project.isima.auth.AuthenticationController.ABSOLUTE_PATH;
 
 @Service
 @RequiredArgsConstructor
@@ -68,7 +62,6 @@ public class AuthenticationService {
                     .build();
         }
         var jwtToken = jwtService.generateToken(user);
-        byte[] pictureBytes = Files.readAllBytes(new File(ABSOLUTE_PATH+"\\"+user.getPicturePath()).toPath());
         return AuthenticationResponse
                 .builder()
                 .token(jwtToken)
@@ -77,7 +70,7 @@ public class AuthenticationService {
                 .lastName(user.getLastName())
                 .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
-                .picture(pictureBytes)
+                .picture(user.getPicturePath())
                 .message("Authentification réussie, Votre compte est activé.")
                 .build();
     }

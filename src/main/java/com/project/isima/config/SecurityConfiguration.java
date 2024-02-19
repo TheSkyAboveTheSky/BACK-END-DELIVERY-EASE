@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -26,6 +25,8 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .cors(withDefaults())
                 .authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/auth/**").permitAll());
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/content/**").permitAll());
+
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/parcels/**").hasAuthority("SENDER"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/all/**").hasAuthority("DELIVERY_PERSON"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/add/**").hasAuthority("DELIVERY_PERSON"));
