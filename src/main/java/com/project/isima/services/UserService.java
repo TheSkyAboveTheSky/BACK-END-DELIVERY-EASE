@@ -6,9 +6,7 @@ import com.project.isima.dtos.UserDTO;
 import com.project.isima.dtos.UserDTOById;
 import com.project.isima.dtos.UserForAdmin;
 import com.project.isima.entities.Parcel;
-import com.project.isima.entities.Review;
 import com.project.isima.entities.User;
-import com.project.isima.enums.AccountStatus;
 import com.project.isima.enums.Role;
 import com.project.isima.exceptions.UserNotFoundException;
 import com.project.isima.repositories.ParcelRepository;
@@ -17,11 +15,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import static com.project.isima.auth.AuthenticationController.ABSOLUTE_PATH;
+import static com.project.isima.auth.AuthenticationController.DIRECTORY;
 
 @Service
 @AllArgsConstructor
@@ -80,6 +84,33 @@ public class UserService {
             });
             userRepository.save(user);
             return new UserDTO(user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail());
+        }
+        return null;
+    }
+
+    public byte[] updateUserPictureProfile(MultipartFile picture) throws IOException {
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> foundUser = userRepository.findUserByEmail(authenticatedUserEmail);
+
+        if(picture != null && foundUser.isPresent()) {
+            String fileName = picture.getOriginalFilename();
+            String pictureUrl = DIRECTORY + fileName;
+            File imageDir = new File(ABSOLUTE_PATH + "\\" + DIRECTORY);
+            if (!imageDir.exists()) {
+                imageDir.mkdirs();
+            }
+            // Save the image file to the server
+            File image = new File(imageDir, fileName);
+            picture.transferTo(image);
+
+            User user = foundUser.get();
+            user.setPicturePath(pictureUrl);
+            userRepository.save(user);
+
+            return Files.readAllBytes(new File(ABSOLUTE_PATH+"\\"+pictureUrl).toPath());
+        }
+        if(foundUser.isPresent() && picture == null) {
+            return Files.readAllBytes(new File(ABSOLUTE_PATH+"\\"+foundUser.get().getPicturePath()).toPath());
         }
         return null;
     }
