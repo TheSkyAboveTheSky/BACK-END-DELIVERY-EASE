@@ -22,6 +22,10 @@ public class Delivery {
     @JoinColumn(name = "parcel_id", referencedColumnName = "id")
     private Parcel parcel;
 
+    @ManyToOne // a Delivery is associated with a single Parcel
+    @JoinColumn(name = "trip_id", referencedColumnName = "id")
+    private Trip trip;
+
     @ManyToOne // a Delivery is associated with a single User (Delivery Person)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

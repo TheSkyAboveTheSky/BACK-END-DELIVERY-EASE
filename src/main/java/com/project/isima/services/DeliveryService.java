@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.project.isima.entities.ImageConstants.BASE_URL;
+
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
@@ -31,6 +33,13 @@ public class DeliveryService {
     private final TripRepository tripRepository;
 
     public ResponseMessage addNewDemandDelivery(Delivery delivery) throws UnauthorizedUserException {
+        // Il faut d'abord vérifier que la demande n'existe pas déjà
+        Integer number = deliveryRepository.findByDetails(delivery.getParcel().getId(), delivery.getTrip().getId());
+
+        if(number > 0) {
+            return new ResponseMessage("La demande de livraison a été déjà envoyée.");
+        }
+
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User sender = userRepository.findUserByEmail(authenticatedUserEmail)
                 .orElseThrow(() -> new UserNotFoundException("Sender Not Found."));
@@ -44,6 +53,10 @@ public class DeliveryService {
         
         Parcel parcel = parcelRepository.findById(delivery.getParcel().getId())
                 .orElseThrow(() -> new ParcelNotFoundException("Parcel Not Found."));
+
+        Trip trip = tripRepository.findById(delivery.getTrip().getId())
+                .orElseThrow(() -> new ParcelNotFoundException("Trip Not Found."));
+
         // Assigner l'utilisateur expéditeur au colis s'il n'est pas déjà assigné
         if (parcel.getUser() == null) {
             parcel.setUser(sender);
@@ -56,6 +69,8 @@ public class DeliveryService {
         delivery.setUser(deliveryPerson);
         // Assigner le colis à la livraison
         delivery.setParcel(parcel);
+        // Assigner le trajet à la livraison
+        delivery.setTrip(trip);
 
         deliveryRepository.save(delivery);
         return new ResponseMessage("La demande de livraison a été envoyée avec succès.");
@@ -70,7 +85,12 @@ public class DeliveryService {
         List<ParcelDTO> parcelDTOSList = parcels.stream().map(parcel -> new ParcelDTO(parcel.getId(),
                 parcel.getDescription(),
                 parcel.getStatus(),
-                new UserDTO(parcel.getUser().getFirstName(), parcel.getUser().getLastName())))
+                new UserDTO(parcel.getUser().getId(),
+                        parcel.getUser().getFirstName(),
+                        parcel.getUser().getLastName(),
+                        parcel.getUser().getPhoneNumber(),
+                        parcel.getUser().getEmail(),
+                        BASE_URL + parcel.getUser().getPicturePath())))
                 .toList();
         return parcelDTOSList;
     }

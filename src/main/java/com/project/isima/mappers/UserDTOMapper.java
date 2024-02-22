@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
+import static com.project.isima.entities.ImageConstants.BASE_URL;
+
 @Component
 @RequiredArgsConstructor
 public class UserDTOMapper implements Function<User, UserDTO> {
@@ -19,7 +21,7 @@ public class UserDTOMapper implements Function<User, UserDTO> {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPhoneNumber(),
-                user.getPicturePath(),
+                BASE_URL + user.getPicturePath(),
                 user.getEmail(),
                 reviewRepository.findTotalStarRatingOfDelivery(user.getId()) == null ? 0.00:(double)reviewRepository.findTotalStarRatingOfDelivery(user.getId()));
     }

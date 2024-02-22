@@ -12,7 +12,7 @@ public class UserDTO {
     String phoneNumber;
     String picture;
     String email;
-    double rating = 0.00;
+    double rating;
 
     public UserDTO(String firstName, String lastName) {
         this.firstName = firstName;
@@ -28,5 +28,10 @@ public class UserDTO {
     public UserDTO(String firstName, String lastName, String phoneNumber, String email, String picture) {
         this(firstName, lastName, phoneNumber, email);
         this.picture = picture;
+    }
+
+    public UserDTO(Long id, String firstName, String lastName, String phoneNumber, String email, String picture) {
+        this(firstName, lastName, phoneNumber, email, picture);
+        this.id = id;
     }
 }
