@@ -4,6 +4,7 @@ import com.project.isima.auth.ResponseMessage;
 import com.project.isima.dtos.AddressDTO;
 import com.project.isima.dtos.TripDTO;
 import com.project.isima.dtos.TripDTOForDelivery;
+import com.project.isima.dtos.UserDTO;
 import com.project.isima.entities.SearchTripsRequest;
 import com.project.isima.entities.Trip;
 import com.project.isima.entities.User;
@@ -13,6 +14,7 @@ import com.project.isima.exceptions.UnauthorizedUserException;
 import com.project.isima.exceptions.UserNotFoundException;
 import com.project.isima.mappers.TripDTOMapper;
 import com.project.isima.repositories.AddressRepository;
+import com.project.isima.repositories.ReviewRepository;
 import com.project.isima.repositories.TripRepository;
 import com.project.isima.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.project.isima.entities.ImageConstants.BASE_URL;
+
 @Service
 @RequiredArgsConstructor
 public class TripService {
@@ -33,16 +37,37 @@ public class TripService {
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final ReviewRepository reviewRepository;
     private final TripDTOMapper tripDTOMapper;
 
-    public List<TripDTOForDelivery> getAllTrips() {
+    public List<TripDTO> getAllTrips() {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> userOptional = userRepository.findUserByEmail(authenticatedUserEmail);
-        User user = userOptional.get();
-        if(!user.getRole().equals(Role.DELIVERY_PERSON)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not a delivery person!");
+
+        if(!userOptional.isPresent()) {
+            return  null;
         }
-        List<TripDTOForDelivery> list = tripRepository.findAllByUser(user).stream().map(trip -> new TripDTOForDelivery(trip.getId(), new AddressDTO(trip.getDepartureAddress().getId(), trip.getDepartureAddress().getCity()), new AddressDTO(trip.getArrivalAddress().getId(), trip.getArrivalAddress().getCity()), trip.getDepartureDate(), trip.getArrivalDate())).toList();
+        User user = userOptional.get();
+        List<TripDTO> list = tripRepository.findAllByUser(user)
+                .stream()
+                .map(trip -> new TripDTO(trip.getId(),
+                             new AddressDTO(trip.getDepartureAddress().getId(),
+                                            trip.getDepartureAddress().getCity()),
+                             new AddressDTO(trip.getArrivalAddress().getId(),
+                                            trip.getArrivalAddress().getCity()),
+                             trip.getDepartureDate(),
+                             trip.getArrivalDate(),
+                             trip.getCost(),
+                             trip.getDescription(),
+                             new UserDTO(trip.getUser().getId(),
+                                         trip.getUser().getFirstName(),
+                                         trip.getUser().getLastName(),
+                                         trip.getUser().getPhoneNumber(),
+                                         trip.getUser().getEmail(),
+                                         BASE_URL + trip.getUser().getPicturePath(),
+                                         reviewRepository.findTotalStarRatingOfDelivery(trip.getUser().getId()) == null ? 0.00:(double)reviewRepository.findTotalStarRatingOfDelivery(trip.getUser().getId())
+                )))
+                .toList();
         return list;
     }
 
