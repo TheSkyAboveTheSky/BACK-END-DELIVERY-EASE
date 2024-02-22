@@ -27,6 +27,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/auth/**").permitAll());
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/content/**").permitAll());
 
+        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/senders/myParcels/**").hasAuthority("SENDER"));
+
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/parcels/**").hasAuthority("SENDER"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/all/**").hasAuthority("DELIVERY_PERSON"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/add/**").hasAuthority("DELIVERY_PERSON"));
