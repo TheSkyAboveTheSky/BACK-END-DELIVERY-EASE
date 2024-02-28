@@ -22,4 +22,9 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

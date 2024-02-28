@@ -15,19 +15,20 @@ public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "departure_address_id", referencedColumnName = "id")
+    @OneToOne
+    @JoinColumn(name = "departure_address_id")
     private Address departureAddress;
 
-    @ManyToOne
-    @JoinColumn(name = "arrival_address_id", referencedColumnName = "id")
+    @OneToOne
+    @JoinColumn(name = "arrival_address_id")
     private Address arrivalAddress;
 
     private Date departureDate;
     private Date arrivalDate;
     private double cost;
     private String description;
-    @ManyToOne // a Trip is associated with a single DeliveryPerson
-    @JoinColumn(name = "delivery_person_id", referencedColumnName = "id")
+
+    @ManyToOne // A DeliveryPerson can have many Trips
+    @JoinColumn(name = "delivery_person_id")
     private User user;
 }

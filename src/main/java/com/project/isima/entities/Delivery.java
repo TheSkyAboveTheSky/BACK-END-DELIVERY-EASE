@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table
@@ -18,18 +17,15 @@ public class Delivery {
     private Long id;
     private Date deliveryDate;
 
-    @ManyToOne // a Delivery is associated with a single Parcel
-    @JoinColumn(name = "parcel_id", referencedColumnName = "id")
+    @OneToOne // a Delivery is associated with a single Parcel
+    @JoinColumn(name = "parcel_id")
     private Parcel parcel;
 
-    @ManyToOne // a Delivery is associated with a single Parcel
-    @JoinColumn(name = "trip_id", referencedColumnName = "id")
+    @OneToOne // a Delivery is associated with a single Parcel
+    @JoinColumn(name = "trip_id")
     private Trip trip;
 
-    @ManyToOne // a Delivery is associated with a single User (Delivery Person)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne //
+    @JoinColumn(name = "user_id")
     private User user;
-
-    @OneToMany
-    private List<Review> reviewList;
 }

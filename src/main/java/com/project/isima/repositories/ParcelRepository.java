@@ -22,7 +22,7 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
             "WHERE sa.city = :departureCity " +
             "AND da.city = :arrivalCity " +
             "AND p.id IN (SELECT dp.parcel.id FROM Delivery dp)")
-    List<Parcel> getAllTripsInDelivery(@Param("departureCity") String departureCity, @Param("arrivalCity") String arrivalCity);
+    List<Parcel> getAllParcelsInDelivery(@Param("departureCity") String departureCity, @Param("arrivalCity") String arrivalCity);
 
     @Query("SELECT p FROM Parcel p " +
             "JOIN Delivery d ON p.id = d.parcel.id " +
