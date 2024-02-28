@@ -2,7 +2,6 @@ package com.project.isima.controllers;
 
 import com.project.isima.auth.ResponseMessage;
 import com.project.isima.dtos.TripDTO;
-import com.project.isima.dtos.TripDTOForDelivery;
 import com.project.isima.entities.SearchTripsRequest;
 import com.project.isima.entities.Trip;
 import com.project.isima.exceptions.UnauthorizedUserException;
@@ -32,7 +31,7 @@ public class TripController {
         return ResponseEntity.ok(trips);
     }
 
-    @PostMapping("/searchTrips")
+    @GetMapping("/searchTrips")
     public ResponseEntity<List<TripDTO>> searchTrips(@RequestBody SearchTripsRequest searchTripsRequest) {
         return ResponseEntity.ok(tripService.searchTrips(searchTripsRequest));
     }

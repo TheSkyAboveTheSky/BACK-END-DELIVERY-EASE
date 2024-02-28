@@ -3,6 +3,7 @@ package com.project.isima.controllers;
 import com.project.isima.auth.ResponseMessage;
 import com.project.isima.dtos.ParcelDTO;
 import com.project.isima.entities.Delivery;
+import com.project.isima.entities.Parcel;
 import com.project.isima.exceptions.UnauthorizedUserException;
 import com.project.isima.services.DeliveryService;
 import lombok.RequiredArgsConstructor;

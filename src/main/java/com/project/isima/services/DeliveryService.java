@@ -80,7 +80,7 @@ public class DeliveryService {
         Trip trip = tripRepository.findById(idTrip)
                 .orElseThrow(() -> new TripNotFoundException("Trip Not Found."));
 
-        List<Parcel> parcels = parcelRepository.getAllTripsInDelivery(trip.getDepartureAddress().getCity(), trip.getArrivalAddress().getCity());
+        List<Parcel> parcels = parcelRepository.getAllParcelsInDelivery(trip.getDepartureAddress().getCity(), trip.getArrivalAddress().getCity());
 
         List<ParcelDTO> parcelDTOSList = parcels.stream().map(parcel -> new ParcelDTO(parcel.getId(),
                 parcel.getDescription(),
@@ -99,6 +99,12 @@ public class DeliveryService {
 
         Parcel parcel = parcelRepository.findById(actionResponse.getId())
                 .orElseThrow(() -> new ParcelNotFoundException("Parcel Not Found."));
+
+        Delivery delivery = deliveryRepository.findByIdParcel(actionResponse.getId());
+
+        if(delivery == null) {
+            return new ResponseMessage("La colis n'est dans aucune livraison.");
+        }
 
         parcel.setStatus(actionResponse.getAction().equals(Status.REFUSED) ? Status.UNSELECTED : actionResponse.getAction());
 

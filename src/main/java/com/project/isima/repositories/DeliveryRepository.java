@@ -17,6 +17,9 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     @Query("DELETE FROM Delivery d WHERE d.parcel.id = :idParcel")
     void deleteParcel(@Param("idParcel") Long idParcel);
 
+    @Query("SELECT d FROM Delivery d WHERE d.parcel.id = :idParcel")
+    Delivery findByIdParcel(@Param("idParcel") Long idParcel);
+
     @Transactional
     @Modifying
     @Query("UPDATE Delivery d SET d.deliveryDate = CURRENT_TIMESTAMP WHERE d.parcel.id = :idParcel")

@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -24,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Entity
 @Builder
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "`user`")
 public class User implements UserDetails {
 
     @Id

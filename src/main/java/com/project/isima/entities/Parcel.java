@@ -17,17 +17,20 @@ public class Parcel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String identifier;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
     private Address shippingAddress;
-    @ManyToOne
+
+    @OneToOne
     @JoinColumn(name = "destination_address_id", referencedColumnName = "id")
     private Address destinationAddress;
+
     private String description;
     @Enumerated(EnumType.STRING)
     private Status status;
+
     @JsonIgnore
     @ManyToOne // a Parcel is associated with a single sender
-    @JoinColumn(name = "sender_id", referencedColumnName = "id")
+    @JoinColumn(name = "sender_id")
     private User user;
 }

@@ -36,6 +36,7 @@ public class ReviewService {
         Delivery delivery = deliveryRepository.findById(idDelivery)
                 .orElseThrow(() -> new DeliveryNotFoundException("Delivery not found."));
 
+        review.setUser(sender);
         review.setReviewDate(new Date());
         review.setDelivery(delivery);
         reviewRepository.save(review);
