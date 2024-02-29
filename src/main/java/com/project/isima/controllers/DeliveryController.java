@@ -29,4 +29,9 @@ public class DeliveryController {
     public ResponseEntity<List<ParcelDTO>> getAllDemands(@PathVariable Long idTrip) {
         return ResponseEntity.ok(deliveryService.getAllDemands(idTrip));
     }
+
+    @GetMapping("/all/{idUser}") // to get all deliveries between sender and delivery man
+    public ResponseEntity<List<Delivery>> getAllDeliveries(@PathVariable Long idUser) {
+        return ResponseEntity.ok(deliveryService.getAllDeliveries(idUser));
+    }
 }

@@ -1,15 +1,16 @@
 package com.project.isima.services;
 
+import com.project.isima.dtos.ParcelDTO;
+import com.project.isima.dtos.UserDTO;
 import com.project.isima.entities.Parcel;
-import com.project.isima.entities.User;
-import com.project.isima.exceptions.ParcelNotFoundException;
+import com.project.isima.entities.Trip;
+import com.project.isima.exceptions.TripNotFoundException;
 import com.project.isima.repositories.ParcelRepository;
+import com.project.isima.repositories.TripRepository;
 import com.project.isima.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,15 +18,29 @@ public class SenderService {
 
     private final ParcelRepository parcelRepository;
     private final UserRepository userRepository;
+    private final TripRepository tripRepository;
 
-    public List<Parcel> getMyParcelsWithDelivery(Long idDelivery) {
-        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+    public List<ParcelDTO> getMyParcelsInDelivery(Long idTrip) {
 
-        User sender = userRepository.findUserByEmail(authenticatedUserEmail)
-                .orElseThrow(() -> new ParcelNotFoundException("Sender Not Found !"));
+        Trip trip = tripRepository.findById(idTrip)
+                .orElseThrow(() -> new TripNotFoundException("Trip Not Found !"));
 
-        Optional<List<Parcel>> parcels = parcelRepository.findMyParcelsWithDelivery(sender.getId(), idDelivery);
+        List<Parcel> parcels =
+                parcelRepository.getAllParcelsInDelivery(trip.getDepartureAddress().getCity(),
+                                                         trip.getArrivalAddress().getCity());
 
-        return parcels.get();
+        List<ParcelDTO> parcelDTOSList = parcels.stream().map(parcel -> new ParcelDTO(parcel.getId(),
+                        parcel.getIdentifier(),
+                        parcel.getDescription(),
+                        parcel.getStatus(),
+                        new UserDTO(trip.getUser().getId(),
+                                trip.getUser().getFirstName(),
+                                trip.getUser().getLastName(),
+                                trip.getUser().getPhoneNumber(),
+                                trip.getUser().getEmail(),
+                                trip.getUser().getPicturePath())))
+                .toList();
+
+        return parcelDTOSList;
     }
 }

@@ -71,7 +71,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
                         .email("admin@gmail.com")
                         .password(passwordEncoder.encode("123456"))
                         .role(Role.ADMIN)
-                        .picturePath(DIRECTORY+"Anonyme.jpeg")
+                        .picturePath(BASE_URL + "Anonyme.jpeg")
                         .accountStatus(AccountStatus.ACTIVATED)
                         .build();
                 userRepository.save(admin);

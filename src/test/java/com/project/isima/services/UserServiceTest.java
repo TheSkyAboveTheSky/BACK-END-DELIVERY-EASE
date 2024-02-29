@@ -1,6 +1,7 @@
 package com.project.isima.services;
 
 import com.project.isima.repositories.ParcelRepository;
+import com.project.isima.repositories.ReviewRepository;
 import com.project.isima.repositories.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +19,12 @@ class UserServiceTest {
 
     @Mock private UserRepository userRepository;
     @Mock private ParcelRepository parcelRepository;
+    @Mock private ReviewRepository reviewRepository;
     private UserService underTest;
 
     @BeforeEach
     void setUp() {
-        underTest = new UserService(userRepository, parcelRepository);
+        underTest = new UserService(userRepository, parcelRepository, reviewRepository);
     }
 
     @Test

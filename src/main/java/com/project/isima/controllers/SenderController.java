@@ -1,6 +1,7 @@
 package com.project.isima.controllers;
 
 
+import com.project.isima.dtos.ParcelDTO;
 import com.project.isima.entities.Parcel;
 import com.project.isima.services.SenderService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,8 @@ import java.util.List;
 public class SenderController {
 
     private final SenderService senderService;
-    @GetMapping("/myParcels/{idDelivery}")
-    public ResponseEntity<List<Parcel>> getMyParcels(@PathVariable Long idDelivery) {
-        return ResponseEntity.ok(senderService.getMyParcelsWithDelivery(idDelivery));
+    @GetMapping("/myParcels/{idTrip}")
+    public ResponseEntity<List<ParcelDTO>> getMyParcels(@PathVariable Long idTrip) {
+        return ResponseEntity.ok(senderService.getMyParcelsInDelivery(idTrip));
     }
 }

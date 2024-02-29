@@ -13,5 +13,5 @@ public class ReviewUser {
     private Integer starRating;
     private String comment;
     private Date reviewDate;
-    private UserDTO user;
+    private UserForAdmin user;
 }
