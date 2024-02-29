@@ -15,12 +15,12 @@ import com.project.isima.repositories.ParcelRepository;
 import com.project.isima.repositories.TripRepository;
 import com.project.isima.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-
-import static com.project.isima.entities.ImageConstants.BASE_URL;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +31,10 @@ public class DeliveryService {
     private final ParcelRepository parcelRepository;
 
     private final TripRepository tripRepository;
+
+    public Delivery getDeliveryByIdParcel(Long idParcel) {
+        return deliveryRepository.findByIdParcel(idParcel);
+    }
 
     public ResponseMessage addNewDemandDelivery(Delivery delivery) throws UnauthorizedUserException {
         // Il faut d'abord vérifier que la demande n'existe pas déjà
@@ -137,4 +141,5 @@ public class DeliveryService {
         }
         return null;
     }
+
 }
