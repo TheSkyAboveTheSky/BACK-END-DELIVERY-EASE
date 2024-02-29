@@ -83,6 +83,7 @@ public class DeliveryService {
         List<Parcel> parcels = parcelRepository.getAllParcelsInDelivery(trip.getDepartureAddress().getCity(), trip.getArrivalAddress().getCity());
 
         List<ParcelDTO> parcelDTOSList = parcels.stream().map(parcel -> new ParcelDTO(parcel.getId(),
+                parcel.getIdentifier(),
                 parcel.getDescription(),
                 parcel.getStatus(),
                 new UserDTO(parcel.getUser().getId(),
@@ -90,7 +91,7 @@ public class DeliveryService {
                         parcel.getUser().getLastName(),
                         parcel.getUser().getPhoneNumber(),
                         parcel.getUser().getEmail(),
-                        BASE_URL + parcel.getUser().getPicturePath())))
+                        parcel.getUser().getPicturePath())))
                 .toList();
         return parcelDTOSList;
     }
@@ -118,5 +119,22 @@ public class DeliveryService {
 
         parcelRepository.save(parcel);
         return new ResponseMessage("Le status de colis est modifie.");
+    }
+
+    public List<Delivery> getAllDeliveries(Long idUser) {
+        Optional<User> user1 = userRepository.findById(idUser);
+
+        String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user2 = userRepository.findUserByEmail(authenticatedUserEmail)
+                .orElseThrow(() -> new UserNotFoundException("Sender Not Found."));
+
+        if(user1.isPresent() && user1.get().getRole().equals(Role.DELIVERY_PERSON) && user2.getRole().equals(Role.SENDER)) {
+            List<Delivery> deliveries = deliveryRepository.findAllDeliveries(user1.get(), user2);
+            return deliveries;
+        }else if(user1.isPresent() && user1.get().getRole().equals(Role.SENDER) && user2.getRole().equals(Role.DELIVERY_PERSON)) {
+            List<Delivery> deliveries = deliveryRepository.findAllDeliveries(user2, user1.get());
+            return deliveries;
+        }
+        return null;
     }
 }

@@ -6,10 +6,12 @@ import com.project.isima.dtos.UserDTO;
 import com.project.isima.dtos.UserForAdmin;
 import com.project.isima.entities.Parcel;
 import com.project.isima.entities.ResponsePicture;
+import com.project.isima.entities.Review;
 import com.project.isima.entities.User;
 import com.project.isima.enums.Role;
 import com.project.isima.exceptions.UserNotFoundException;
 import com.project.isima.repositories.ParcelRepository;
+import com.project.isima.repositories.ReviewRepository;
 import com.project.isima.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,12 +32,20 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ParcelRepository parcelRepository;
+    private final ReviewRepository reviewRepository;
 
     public List<UserForAdmin> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserForAdmin> userDTOList = users.stream()
                 .filter(user -> !user.getRole().equals(Role.ADMIN))
-                .map(user -> new UserForAdmin(user.getId(),user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), BASE_URL + user.getPicturePath(), user.getRole(), user.getAccountStatus()))
+                .map(user -> new UserForAdmin(user.getId(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getPhoneNumber(),
+                        user.getEmail(),
+                        user.getPicturePath(),
+                        user.getRole(),
+                        user.getAccountStatus()))
                 .toList();
         return userDTOList;
     }
@@ -43,14 +53,22 @@ public class UserService {
     public UserDTO getUserInfosById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found !"));
-        return new UserDTO(user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), BASE_URL + user.getPicturePath());
+        return new UserDTO(user.getFirstName(),
+                user.getLastName(),
+                user.getPhoneNumber(),
+                user.getEmail(),
+                user.getPicturePath());
     }
 
     public UserDTO getMyInfos() {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByEmail(authenticatedUserEmail)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found !"));
-        return new UserDTO(user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail(), BASE_URL + user.getPicturePath());
+        return new UserDTO(user.getFirstName(),
+                user.getLastName(),
+                user.getPhoneNumber(),
+                user.getEmail(),
+                user.getPicturePath());
     }
 
     public List<Parcel> getParcelsOfUserById(Long id) {
@@ -63,8 +81,31 @@ public class UserService {
         return parcelsList;
     }
 
-    public List<ReviewUser> getReviewOfUserById(Long id){
-        return null; // TO DO...
+    public List<ReviewUser> getReviewOfUserById(Long idDeliveryPerson){
+
+        Optional<User> deliveryPerson = userRepository.findById(idDeliveryPerson);
+        if(deliveryPerson.isPresent()) {
+            List<Review> reviews =  reviewRepository.findAllDeliveryPerson(deliveryPerson.get());
+
+            List<ReviewUser> reviewUsers = reviews
+                    .stream()
+                    .map(review -> new ReviewUser(review.getId(),
+                            review.getStarRating(),
+                            review.getComment(),
+                            review.getReviewDate(),
+                            new UserForAdmin(review.getUser().getId(),
+                                    review.getUser().getFirstName(),
+                                    review.getUser().getLastName(),
+                                    review.getUser().getPhoneNumber(),
+                                    review.getUser().getEmail(),
+                                    review.getUser().getPicturePath(),
+                                    review.getUser().getRole(),
+                                    review.getUser().getAccountStatus())))
+                    .toList();
+
+            return reviewUsers;
+        }
+        return null;
     }
 
     public UserDTO updateUserInfo(Map<String, Object> fields) {
@@ -80,7 +121,10 @@ public class UserService {
                 ReflectionUtils.setField(field, user, value);
             });
             userRepository.save(user);
-            return new UserDTO(user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.getEmail());
+            return new UserDTO(user.getFirstName(),
+                    user.getLastName(),
+                    user.getPhoneNumber(),
+                    user.getEmail());
         }
         return null;
     }
@@ -102,9 +146,9 @@ public class UserService {
             User user = foundUser.get();
             user.setPicturePath(fileName);
             userRepository.save(user);
-            return new ResponsePicture(BASE_URL + user.getPicturePath());
+            return new ResponsePicture(user.getPicturePath());
         }else if(picture == null && foundUser.isPresent()) {
-            return new ResponsePicture(BASE_URL + foundUser.get().getPicturePath());
+            return new ResponsePicture(foundUser.get().getPicturePath());
         }
         return null;
     }

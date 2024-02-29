@@ -21,7 +21,7 @@ public class UserDTOMapper implements Function<User, UserDTO> {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPhoneNumber(),
-                BASE_URL + user.getPicturePath(),
+                user.getPicturePath(),
                 user.getEmail(),
                 reviewRepository.findTotalStarRatingOfDelivery(user.getId()) == null ? 0.00:(double)reviewRepository.findTotalStarRatingOfDelivery(user.getId()));
     }

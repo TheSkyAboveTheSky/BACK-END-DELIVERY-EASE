@@ -3,12 +3,10 @@ package com.project.isima.services;
 import com.project.isima.auth.ResponseMessage;
 import com.project.isima.dtos.AddressDTO;
 import com.project.isima.dtos.TripDTO;
-import com.project.isima.dtos.TripDTOForDelivery;
 import com.project.isima.dtos.UserDTO;
 import com.project.isima.entities.SearchTripsRequest;
 import com.project.isima.entities.Trip;
 import com.project.isima.entities.User;
-import com.project.isima.enums.Role;
 import com.project.isima.exceptions.TripNotFoundException;
 import com.project.isima.exceptions.UnauthorizedUserException;
 import com.project.isima.exceptions.UserNotFoundException;
@@ -18,10 +16,8 @@ import com.project.isima.repositories.ReviewRepository;
 import com.project.isima.repositories.TripRepository;
 import com.project.isima.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -64,7 +60,7 @@ public class TripService {
                                          trip.getUser().getLastName(),
                                          trip.getUser().getPhoneNumber(),
                                          trip.getUser().getEmail(),
-                                         BASE_URL + trip.getUser().getPicturePath(),
+                                         trip.getUser().getPicturePath(),
                                          reviewRepository.findTotalStarRatingOfDelivery(trip.getUser().getId()) == null ? 0.00:(double)reviewRepository.findTotalStarRatingOfDelivery(trip.getUser().getId())
                 )))
                 .toList();

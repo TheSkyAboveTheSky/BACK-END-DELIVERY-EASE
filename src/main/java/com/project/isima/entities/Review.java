@@ -23,7 +23,7 @@ public class Review {
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

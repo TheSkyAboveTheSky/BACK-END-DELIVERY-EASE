@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ParcelDTO {
     private Long id;
+    private String identifier;
     private String description;
     private Status status;
     private UserDTO userDTO;

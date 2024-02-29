@@ -29,7 +29,7 @@ public class AuthenticationController {
             @Valid @RequestBody RegisterRequest request
     ) throws IOException {
         if(picture == null || picture.isEmpty()) {
-            request.setPicturePath("Anonyme.jpeg");
+            request.setPicturePath(BASE_URL + "Anonyme.jpeg");
         } else {
             String fileName = picture.getOriginalFilename();
             // Create the images directory if it doesn't exist
@@ -40,7 +40,7 @@ public class AuthenticationController {
             // Save the image file to the server
             File image = new File(imageDir, fileName);
             picture.transferTo(image);
-            request.setPicturePath(fileName);
+            request.setPicturePath(BASE_URL + fileName);
         }
         return ResponseEntity.ok(authenticationService.register(request));
     }
@@ -58,7 +58,7 @@ public class AuthenticationController {
                         .lastName(response.getLastName())
                         .phoneNumber(response.getPhoneNumber())
                         .role(response.getRole())
-                        .picture(BASE_URL + response.getPicture())
+                        .picture(response.getPicture())
                         .message(response.getMessage())
                         .build());
     }
