@@ -7,6 +7,7 @@ import com.project.isima.entities.Parcel;
 import com.project.isima.exceptions.UnauthorizedUserException;
 import com.project.isima.services.DeliveryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,16 @@ import java.util.List;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
+
+    @GetMapping("/{idParcel}")
+    public ResponseEntity<Delivery> getDelivery(@PathVariable Long idParcel) {
+        Delivery delivery = deliveryService.getDeliveryByIdParcel(idParcel);
+        if (delivery != null) {
+            return ResponseEntity.ok(delivery);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
     @PostMapping("/demand")
     public ResponseEntity<ResponseMessage> addNewDemandDelivery(@RequestBody Delivery delivery) throws UnauthorizedUserException {

@@ -6,7 +6,6 @@ import com.project.isima.dtos.UserDTO;
 import com.project.isima.dtos.UserForAdmin;
 import com.project.isima.entities.Parcel;
 import com.project.isima.entities.ResponsePicture;
-import com.project.isima.entities.Review;
 import com.project.isima.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
