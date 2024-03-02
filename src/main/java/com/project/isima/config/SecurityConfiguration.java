@@ -30,7 +30,7 @@ public class SecurityConfiguration {
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/senders/myParcels/**").hasAuthority("SENDER"));
 
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/parcels/**").hasAuthority("SENDER"));
-        httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/all/**").hasAuthority("DELIVERY_PERSON"));
+
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/add/**").hasAuthority("DELIVERY_PERSON"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/update/**").hasAuthority("DELIVERY_PERSON"));
         httpSecurity.authorizeHttpRequests(authorize->authorize.requestMatchers("/api/v1/trips/delete/**").hasAuthority("DELIVERY_PERSON"));
