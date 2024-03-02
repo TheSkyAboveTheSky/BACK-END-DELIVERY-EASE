@@ -15,7 +15,7 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer starRating;
+    private double starRating;
     private String comment;
     private Date reviewDate;
 

@@ -31,6 +31,17 @@ public class TripController {
         return ResponseEntity.ok(trips);
     }
 
+    @GetMapping("/all/{idUser}")
+    public ResponseEntity<List<TripDTO>> getUserTrips(@PathVariable Long idUser) {
+        List<TripDTO> trips;
+        try {
+            trips = tripService.getUserTrips(idUser);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(trips);
+    }
+
     @GetMapping("/searchTrips")
     public ResponseEntity<List<TripDTO>> searchTrips(@RequestBody SearchTripsRequest searchTripsRequest) {
         return ResponseEntity.ok(tripService.searchTrips(searchTripsRequest));

@@ -67,6 +67,38 @@ public class TripService {
         return list;
     }
 
+    public List<TripDTO> getUserTrips(Long idUser) {
+
+        Optional<User> u = userRepository.findById(idUser);
+
+        if(!u.isPresent()) {
+            return  null;
+        }
+
+        User user = u.get();
+        List<TripDTO> list = tripRepository.findAllByUser(user)
+                .stream()
+                .map(trip -> new TripDTO(trip.getId(),
+                        new AddressDTO(trip.getDepartureAddress().getId(),
+                                trip.getDepartureAddress().getCity()),
+                        new AddressDTO(trip.getArrivalAddress().getId(),
+                                trip.getArrivalAddress().getCity()),
+                        trip.getDepartureDate(),
+                        trip.getArrivalDate(),
+                        trip.getCost(),
+                        trip.getDescription(),
+                        new UserDTO(trip.getUser().getId(),
+                                trip.getUser().getFirstName(),
+                                trip.getUser().getLastName(),
+                                trip.getUser().getPhoneNumber(),
+                                trip.getUser().getEmail(),
+                                trip.getUser().getPicturePath(),
+                                reviewRepository.findTotalStarRatingOfDelivery(trip.getUser().getId()) == null ? 0.00:(double)reviewRepository.findTotalStarRatingOfDelivery(trip.getUser().getId())
+                        )))
+                .toList();
+        return list;
+    }
+
     public ResponseMessage addNewTrip(Trip trip) throws UnauthorizedUserException{
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> userOptional = userRepository.findUserByEmail(authenticatedUserEmail);
