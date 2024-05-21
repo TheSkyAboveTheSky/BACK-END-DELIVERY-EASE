@@ -3,38 +3,34 @@ package com.project.isima.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.isima.enums.Status;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Parcel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String identifier;
-    private String destinationAddress;
-    private String shippingAddress;
+    @OneToOne
+    @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
+    private Address shippingAddress;
+
+    @OneToOne
+    @JoinColumn(name = "destination_address_id", referencedColumnName = "id")
+    private Address destinationAddress;
+
     private String description;
+    @Enumerated(EnumType.STRING)
     private Status status;
+
     @JsonIgnore
     @ManyToOne // a Parcel is associated with a single sender
-    @JoinColumn(name = "sender_id", referencedColumnName = "id")
+    @JoinColumn(name = "sender_id")
     private User user;
-
-    public Parcel() {
-
-    }
-
-    public Parcel(String identifier,
-                  String destinationAddress,
-                  String shippingAddress,
-                  String description) {
-        this.identifier = identifier;
-        this.destinationAddress = destinationAddress;
-        this.shippingAddress = shippingAddress;
-        this.description = description;
-        this.status = Status.UNCONFIRMED;
-    }
 }

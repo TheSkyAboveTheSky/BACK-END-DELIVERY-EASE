@@ -1,11 +1,9 @@
 package com.project.isima.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.Date;
 
 @Entity
@@ -17,14 +15,20 @@ public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String departureAddress;
-    private String arrivalAddress;
+    @OneToOne
+    @JoinColumn(name = "departure_address_id")
+    private Address departureAddress;
+
+    @OneToOne
+    @JoinColumn(name = "arrival_address_id")
+    private Address arrivalAddress;
+
     private Date departureDate;
     private Date arrivalDate;
     private double cost;
     private String description;
-    @JsonIgnore
-    @ManyToOne // a Trip is associated with a single DeliveryPerson
-    @JoinColumn(name = "delivery_person_id", referencedColumnName = "id")
+
+    @ManyToOne // A DeliveryPerson can have many Trips
+    @JoinColumn(name = "delivery_person_id")
     private User user;
 }
